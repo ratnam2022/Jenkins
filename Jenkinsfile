@@ -8,12 +8,13 @@ node {
 pipeline {
     agent any
     parameters {
-        choice(choices: "${verList}", name: 'VERSION_NUMBER', description: 'please choose the environment you want to deploy?')
+        choice(choices: ['dev', 'test', 'prod'], name: 'ENVIRONMENT', description: 'please choose the environment you want to deploy?')
+        choice(choices: "${verList}", name: 'VERSION_NUMBER', description: 'please choose the version you want to deploy?')
     }
     stages {
         stage('Deploy') {
             steps {
-                echo "Deploying the Version: ${params.VERSION_NUMBER}"
+                echo "Deploying the Version: ${params.VERSION_NUMBER} to tne ${params.Environment} environment."
             }
         }
     }
