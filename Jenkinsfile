@@ -1,7 +1,7 @@
 def envList
 def dockerId
 node {
-    envList = "defaultValue\n" + sh (script: 'pwd', returnStdout: true).trim()
+    envList = "defaultValue\n" + sh (script: 'date', returnStdout: true).trim()
 }
 pipeline {
     agent any
