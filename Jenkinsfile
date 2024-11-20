@@ -13,13 +13,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Deploying to: ${params.ENVIRONMENT}"
-                // Your deployment steps here, using the selected environment
-                // Example:
-                if (params.ENVIRONMENT == 'prod') {
-                    // Execute production deployment commands
-                } else {
-                    // Execute deployment commands for other environments
-                }
             }
         }
     }
