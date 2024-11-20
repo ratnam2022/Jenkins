@@ -1,18 +1,16 @@
-def envList
-def dockerId
+def verList
 node {
-    envList = "defaultValue\n" + sh (script: 'date', returnStdout: true).trim()
+    verList = "defaultValue\n" + sh (script: 'date', returnStdout: true).trim()
 }
 pipeline {
     agent any
     parameters {
-        choice(choices: "${envList}", name: 'DEPLOYMENT_ENVIRONMENT', description: 'please choose the environment you want to deploy?')
-        booleanParam(name: 'SECURITY_SCAN',defaultValue: false, description: 'container vulnerability scan')
+        choice(choices: "${verList}", name: 'VERSION_NUMBER', description: 'please choose the environment you want to deploy?')
     }
     stages {
         stage('Deploy') {
             steps {
-                echo "Deploying to: ${params.ENVIRONMENT}"
+                echo "Deploying the Version: ${params.VERSION_NUMBER}"
             }
         }
     }
