@@ -1,6 +1,9 @@
 def verList
 node {
-    verList = "None\n" + sh (script: 'git branch -r', returnStdout: true).trim()
+    def branches = sh(script: 'git branch -r', returnStdout: true).trim()
+    verList = "None\n" + branches.split("\n").collect { 
+        it.replace('origin/', '').trim()  // Remove 'origin/' prefix
+    }.join("\n")
 }
 pipeline {
     agent any
