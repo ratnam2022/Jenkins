@@ -1,6 +1,6 @@
 def verList
 node {
-    verList = "None\n" + sh (script: 'git branch', returnStdout: true).trim()
+    verList = "None\n" + sh (script: 'git branch -r', returnStdout: true).trim()
 }
 pipeline {
     agent any
