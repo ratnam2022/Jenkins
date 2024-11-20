@@ -1,16 +1,33 @@
-def verList
-node {
-    verList = "None\n" + sh (script: 'date', returnStdout: true).trim()
-}
 pipeline {
     agent any
     parameters {
-        choice(choices: "${verList}", name: 'VERSION_NUMBER', description: 'please choose the environment you want to deploy?')
+        choice(choices: ['origin', 'local'], name: 'ENVIRONMENT', description: 'Please choose the environment you want to deploy?')
     }
     stages {
+        stage('Get Versions') {
+            steps {
+                script {
+                    def branches = sh(script: 'git branch -a', returnStdout: true).trim()
+                    def filteredBranches = branches.split("\n").findAll { 
+                        it.contains("${params.ENVIRONMENT}/")  // Filter based on selected environment
+                    }.collect { 
+                        it.trim() 
+                    }
+                    env.FILTERED_BRANCHES = filteredBranches.join("\n")
+                }
+            }
+        }
         stage('Deploy') {
             steps {
-                echo "Deploying the Version: ${params.VERSION_NUMBER}"
+                script {
+                    def versionChoice = input(
+                        id: 'versionChoice',
+                        message: 'Select a version to deploy',
+                        parameters: [choice(name: 'VERSION_NUMBER', choices: env.FILTERED_BRANCHES, description: 'Please choose the version')]
+                    )
+                    env.SELECTED_VERSION = versionChoice
+                }
+                echo "Deploying the version: ${env.SELECTED_VERSION} to the ${params.ENVIRONMENT} environment."
             }
         }
     }
