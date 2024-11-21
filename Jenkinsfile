@@ -8,12 +8,7 @@ pipeline {
             steps {
                 script {
                     def branches = sh(script: 'git branch -a', returnStdout: true).trim()
-                    def filteredBranches = branches.split("\n").findAll { 
-                        it.contains("${params.ENVIRONMENT}/")  // Filter based on selected environment
-                    }.collect { 
-                        it.trim() 
-                    }
-                    env.FILTERED_BRANCHES = filteredBranches.join("\n")
+                    env.FILTERED_BRANCHES = branches.join("\n")
                 }
             }
         }
