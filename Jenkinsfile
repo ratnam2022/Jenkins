@@ -1,7 +1,8 @@
 pipeline {
     agent any
     parameters {
-        choice(choices: ['origin', 'local'], name: 'ENVIRONMENT', description: 'Please choose the environment you want to deploy?')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'uat','engg','prod'], description: 'Please choose the environment you want to deploy')
+        choice(name: 'APPLICATION_NAME', choices: ['kinisi-ui', 'kinisi-app', 'kinisi-devops'], description: 'Select the application to deploy')
     }
     stages {
         stage('Get Versions') {
@@ -9,7 +10,7 @@ pipeline {
                 script {
                     def branches = sh(script: 'git branch -a', returnStdout: true).trim()
                     def filteredBranches = branches.split("\n").findAll { 
-                        it.contains("${params.ENVIRONMENT}/")  // Filter based on selected environment
+                        it.contains("${params.ENVIRONMENT}/")
                     }.collect { 
                         it.trim() 
                     }
