@@ -5,16 +5,14 @@ pipeline {
         choice(name: 'APPLICATION_NAME', choices: ['kinisi-ui', 'kinisi-app', 'kinisi-devops'], description: 'Select the application to deploy')
     }
     stages {
-        stage('Get Versions') {
+        stage('Get Tags') {
             steps {
                 script {
-                    def branches = sh(script: 'git branch -a', returnStdout: true).trim()
-                    def filteredBranches = branches.split("\n").findAll { 
-                        it.contains("${params.ENVIRONMENT}/")
-                    }.collect { 
+                    def tags = sh(script: 'git tag', returnStdout: true).trim()
+                    def tagList = tags.split("\n").collect { 
                         it.trim() 
                     }
-                    env.FILTERED_BRANCHES = filteredBranches.join("\n")
+                    env.TAG_LIST = tagList.join("\n") 
                 }
             }
         }
@@ -24,7 +22,7 @@ pipeline {
                     def versionChoice = input(
                         id: 'versionChoice',
                         message: 'Select a version to deploy',
-                        parameters: [choice(name: 'VERSION_NUMBER', choices: env.FILTERED_BRANCHES, description: 'Please choose the version')]
+                        parameters: [choice(name: 'VERSION_NUMBER', choices: env.TAG_LIST, description: 'Please choose the version')]
                     )
                     env.SELECTED_VERSION = versionChoice
                 }
