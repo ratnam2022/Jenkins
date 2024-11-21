@@ -9,10 +9,14 @@ pipeline {
             steps {
                 script {
                     def tags = sh(script: 'git tag', returnStdout: true).trim()
-                    def tagList = tags.split("\n").collect { 
-                        it.trim() 
+                    // Filter tags based on the selected environment
+                    def filteredTags = tags.split("\n").findAll { 
+                        it.startsWith("${params.ENVIRONMENT}/") 
+                    }.collect { 
+                        // Extract the version number from the tag
+                        it.split("/")[1]  
                     }
-                    env.TAG_LIST = tagList.join("\n") 
+                    env.FILTERED_TAG_LIST = filteredTags.join("\n") 
                 }
             }
         }
@@ -22,7 +26,7 @@ pipeline {
                     def versionChoice = input(
                         id: 'versionChoice',
                         message: 'Select a version to deploy',
-                        parameters: [choice(name: 'VERSION_NUMBER', choices: env.TAG_LIST, description: 'Please choose the version')]
+                        parameters: [choice(name: 'VERSION_NUMBER', choices: env.FILTERED_TAG_LIST, description: 'Please choose the version')]
                     )
                     env.SELECTED_VERSION = versionChoice
                 }
