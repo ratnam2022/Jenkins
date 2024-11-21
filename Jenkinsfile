@@ -8,7 +8,10 @@ pipeline {
             steps {
                 script {
                     def branches = sh(script: 'git branch -a', returnStdout: true).trim()
-                    env.FILTERED_BRANCHES = branches.join("\n")
+                    def filteredBranches = branches.split("\n").collect { 
+                        it.replaceAll(/^[^\/]+\//, '').trim()
+                    }
+                    env.FILTERED_BRANCHES = filteredBranches.join("\n")
                 }
             }
         }
