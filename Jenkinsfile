@@ -10,7 +10,9 @@ pipeline {
                 script {
                     // def tags = sh(script: 'git tag', returnStdout: true).trim()
                     sh """
-                         tags=\$(git tag)
+                         #!/bin/bash
+                        tags=$(git tag)
+                        echo "TAGS=$tags"
                     """
                     def filteredTags = tags.split("\n").findAll { 
                         it.startsWith("${params.ENVIRONMENT}/") 
