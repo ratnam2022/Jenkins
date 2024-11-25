@@ -8,8 +8,10 @@ pipeline {
         stage('Get Tags') {
             steps {
                 script {
-                    def tags = sh(script: 'git tag', returnStdout: true).trim()
-                    // Filter tags based on the selected environment
+                    // def tags = sh(script: 'git tag', returnStdout: true).trim()
+                    sh """
+                         tags='git tag'
+                    """
                     def filteredTags = tags.split("\n").findAll { 
                         it.startsWith("${params.ENVIRONMENT}/") 
                     }.collect { 
