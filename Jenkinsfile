@@ -11,7 +11,7 @@ pipeline {
                     // def tags = sh(script: 'git tag', returnStdout: true).trim()
                     sh """
                          #!/bin/bash
-                        tags=$(git tag)
+                        tags=\$(git tag)
                         echo "TAGS=$tags"
                     """
                     def filteredTags = tags.split("\n").findAll { 
